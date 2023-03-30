@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form | crispy }}
+    {{ document_formset | crispy }}
+    <input type="submit" class="btn btn-primary" value="Create Complaint">
+</form>
+{% endblock %}
