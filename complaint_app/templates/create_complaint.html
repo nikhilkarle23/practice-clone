@@ -4,7 +4,53 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form | crispy }}
-    {{ document_formset | crispy }}
+    <div>
+        {% with document_formset.empty_form as doc_form %}
+        <div id="formset-template" style="display: none;">
+            {% for fld in doc_form.hidden_fields %}{{ fld }}{% endfor %}
+            <div class="form-row align-items-end">
+                <div class="form-group col-lg-5 mb-0">
+                    {{ doc_form.files | as_crispy_field }}
+                </div>
+                <div class="form-group col-lg-1 remove-button">
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {{ document_formset.management_form | crispy }}
+        {% for doc_form in document_formset %}
+        <div id="qualifications-formset">
+            {% for fld in doc_form.hidden_fields %}{{ fld }}{% endfor %}
+            <div class="form-row align-items-end">
+                <div class="form-group col-lg-5 mb-0">
+                    {{ doc_form.action | as_crispy_field }}
+                </div>
+                <div class="form-group col-lg-1 remove-button">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+         <div id="extras-section"></div>
+    </div>
     <input type="submit" class="btn btn-primary" value="Create Complaint">
 </form>
+{{ document_formset.form.js }}
+{% endblock %}
+
+{% block bottomscript %}
+<script>
+$(function () {
+    $('#qualifications-formset').formset({
+        formTemplate: $('#formset-template').clone(),
+        prefix: 'action_form_set',
+        addText: 'Add Another Action',
+        addCssClass: 'add-row btn btn-sm btn-primary mt-4 text-right',
+        addContainerClass: null,
+        deleteText: 'Remove',
+        deleteCssClass: 'delete-row btn btn-sm btn-secondary btn-block',
+        deleteContainerClass: 'remove-button',
+    })
+});
+
+</script>
 {% endblock %}
